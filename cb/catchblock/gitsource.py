@@ -4,7 +4,7 @@ Rules this module enforces: only github.com repo URLs, a throw-away directory, n
 executed (no hooks, no installs), symlinks are not materialised, size and time are capped, and the
 checkout is always deleted. Error messages never contain local paths.
 """
-import os, re, shutil, subprocess, tempfile, time
+import os, re, shutil, subprocess, tempfile, time, stat
 from contextlib import contextmanager
 from pathlib import Path
 from urllib.parse import urlparse
@@ -96,6 +96,13 @@ def _clone(remote, dest: Path, branch, allow_file=False, timeout=TIMEOUT_S, max_
     if _dir_mb(dest) > max_mb:
         raise SourceError("too_large", f"This repository is larger than the {max_mb} MB scan limit.")
 
+def _handle_remove_readonly(func, path, exc_info):
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except OSError:
+        pass
+
 @contextmanager
 def checkout(url: str, _remote=None):
     """Yield (path, source_info) for a temporary read-only checkout; always cleaned up."""
@@ -109,4 +116,4 @@ def checkout(url: str, _remote=None):
                 "branch": branch, "url": f"https://github.com/{owner}/{repo}"}
         yield dest, info
     finally:
-        shutil.rmtree(tmp, ignore_errors=True)
+        shutil.rmtree(tmp, onerror=_handle_remove_readonly)
