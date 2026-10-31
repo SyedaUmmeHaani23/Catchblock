@@ -1,116 +1,444 @@
-﻿# CatchBlock
+# 🛡️ CatchBlock
 
-**Catch issues before they catch you.**
+### Catch issues before they catch you.
 
-CatchBlock checks the health of a code repository. Paste a public GitHub link (or a local folder) and it gives you a 0 to 100 score, plain-English findings, a commit heartbeat and safe fixes. It only reads files: nothing from the scanned repo is ever executed.
+**A repository health and readiness analyzer that helps developers identify problems before sharing, submitting, or shipping their code.**
 
-## What it checks
+<p align="center">
+  <a href="https://catchblock.vercel.app">🌐 Live Application</a> •
+  <a href="https://catchblock.onrender.com">⚙️ Backend API</a> •
+  <a href="https://github.com/SyedaUmmeHaani23/Catchblock">💻 GitHub Repository</a>
+</p>
+
+---
+
+## 🚨 The Problem
+
+Building a project is more than writing code.
+
+A repository may work perfectly on a developer's machine and still be far from ready to share or submit.
+
+A missing README, exposed credentials, unpinned dependencies, absent tests, incomplete documentation, or suspicious Git history can make an otherwise promising project difficult to maintain, review, or trust.
+
+For beginners, identifying these problems is even harder. Many tools report technical issues without explaining what they mean or what to do next.
+
+**Developers need more than another error message. They need to understand the health of their repository and know how to improve it.**
+
+## 💡 Our Solution: CatchBlock
+
+CatchBlock brings repository health checks into one place.
+
+Provide a public GitHub repository URL or scan a local folder, and CatchBlock analyzes the repository, generates a health score from 0–100, identifies potential issues, explains findings in plain English, and suggests actionable improvements.
+
+It also provides commit-history insights, safe fix previews, reports, health badges, and developer workflow integrations.
+
+Our objective is to make repository quality, security, and readiness easier to understand and improve — especially for student developers, hackathon participants, and open-source contributors.
+
+---
+
+## 🌐 Try CatchBlock
+
+| Component | Link |
+|---|---|
+| Live Frontend | https://catchblock.vercel.app |
+| Backend API | https://catchblock.onrender.com |
+| Backend Health Check | https://catchblock.onrender.com/health |
+| Source Code | https://github.com/SyedaUmmeHaani23/Catchblock |
+
+**How to try it:**
+1. Open the live application.
+2. Enter a public GitHub repository URL.
+3. Start the scan.
+4. Review the repository health score and findings.
+5. Explore explanations and suggested improvements.
+
+> Note: The free backend hosted on Render may take some time to wake up after inactivity. The first scan may therefore take longer.
+
+---
+
+## ✨ Key Features
+
+### 1. Repository Health Score
+- Generates an overall repository health score from 0–100.
+- Identifies potential quality, security, documentation, and readiness issues.
+- Helps developers understand areas that need attention.
+
+### 2. Comprehensive Repository Checks
 
 | Check | What it looks for |
-| --- | --- |
-| LICENSE | A licence file exists and is a recognised open-source licence |
-| README | Setup, usage and contributing sections |
-| .gitignore | Present, so keys and build output are not committed |
-| Secrets | Leaked keys and `.env` files in the current files |
-| Secrets in history | Keys that were committed and later deleted but still sit in git history (values are never shown) |
-| CI | A workflow (GitHub Actions, GitLab, CircleCI and others) |
-| Tests | A test folder or test files |
-| CONTRIBUTING | A guide for newcomers |
-| AI tools and credits | AI tool files or packages detected but not named in the README, and a missing Credits section |
-| Dependencies | Lockfile present and versions pinned |
-| Git history | Commit count, contributors, giant dump commits, vague messages |
-| Event rules (optional) | A rulebook file can add: licence in the first commit, event window, minimum contributors |
+|---|---|
+| LICENSE | Licence file existence and recognised open-source licences |
+| README | Setup, usage, and contributing sections |
+| .gitignore | Presence of files that help prevent committing keys and build output |
+| Secrets | Potential leaked keys and `.env` files in current files |
+| Secrets in history | Secrets committed and later deleted but still present in Git history; values are never displayed |
+| CI | Workflows such as GitHub Actions, GitLab CI, and CircleCI |
+| Tests | Test folders and test files |
+| CONTRIBUTING | Contributor documentation |
+| AI tools and credits | AI-related files or packages not acknowledged in the README, and missing Credits sections |
+| Dependencies | Lockfiles and pinned dependency versions |
+| Git history | Commit count, contributors, unusually large commits, and vague messages |
+| Event rules | Optional rulebooks for event windows, minimum contributors, and licence requirements |
 
-## What makes it different
+### 3. Plain-English Explanations
+Technical findings can be difficult to understand, particularly for beginners.
 
-- **Deleted-secret detection.** Most beginner tools only read the current files. CatchBlock also reads recent commits and warns when a secret was removed but is still readable in history.
-- **Quick wins.** Findings are ranked by points gained, with a projected score if you apply the suggested fixes.
-- **Safe fixes.** Every fix shows a diff first, never overwrites a file, and can be undone. GitHub repos stay read-only: you download a `.patch`.
-- **Commit heartbeat.** A timeline of commits with review signals (before the event, after the freeze, giant dump). A signal is a reason to look closer, never proof.
-- **Pre-push guard.** An optional git hook that blocks a push with a leaked secret or no licence.
-- **Local explainer (optional).** "Explain it simply" asks a local Gemma model (through Ollama) to reword a finding. The scanner stays the source of truth and the score never depends on the model.
+CatchBlock helps explain findings in simple language so developers can understand:
+- What the issue is.
+- Why it matters.
+- What they can do about it.
 
-## Run it
+### 4. Deleted-Secret Detection
+CatchBlock goes beyond checking the current files.
 
-You need Python 3.11+, Git and Node.js 20.19+ (or 22+).
+It also examines recent Git history to identify potential secrets that were committed and subsequently deleted but may remain accessible in previous commits.
 
-Windows: double-click `start-windows.bat`. Or use two terminals:
+Secret values are never displayed in findings.
 
+### 5. Smart Quick Wins
+- Ranks findings by potential points gained.
+- Highlights improvements that can make the biggest difference.
+- Provides a projected score after suggested fixes.
+
+The projected score is an estimate, not a guaranteed result.
+
+### 6. Safe Fixes and Undo
+- Previews proposed changes through diffs.
+- Avoids silently overwriting existing files.
+- Supports undo for applicable local changes.
+- For GitHub repositories, fixes remain read-only and can be downloaded as `.patch` files.
+
+### 7. Commit Heartbeat
+A timeline of repository commits with review signals such as:
+- Activity before an event.
+- Activity after a freeze.
+- Unusually large commits.
+- Vague commit messages.
+
+These signals help reviewers investigate patterns. They are not proof of misconduct.
+
+### 8. Pre-push Guard
+An optional Git hook that can block a push when it detects a leaked secret or a missing licence.
+
+### 9. Reports, Badges and Score History
+- Generates Markdown reports.
+- Provides an issue checklist for GitHub issues and pull requests.
+- Generates a downloadable SVG health badge.
+- Tracks score changes across scans.
+- Keeps local score history on the user's computer.
+
+### 10. CI Score Gate
+Use the CLI minimum-score option to make a CI pipeline fail when a repository falls below a chosen health score.
+
+### 11. Optional Local AI Explainer
+CatchBlock supports an optional local Gemma model through Ollama.
+
+It can reword findings into simpler explanations. The scanner remains the source of truth: AI does not determine the repository score or verdict.
+
+---
+
+## 🏗️ How It Works
+
+```text
+        Developer
+            |
+            v
+   Public GitHub URL
+      or Local Folder
+            |
+            v
+    CatchBlock Frontend
+       React + Vite
+            |
+            v
+      Python Backend
+            |
+            v
+    Repository Analysis
+            |
+     +------+------+
+     |      |      |
+     v      v      v
+  Security Quality Git History
+  Checks   Checks  Analysis
+     |      |      |
+     +------+------+
+            |
+            v
+     Health Score
+     Findings
+     Explanations
+     Suggested Fixes
+            |
+            v
+      Actionable Report
 ```
+
+### Architecture
+
+| Layer | Technology | Responsibility |
+|---|---|---|
+| Frontend | React.js | User interface and scan experience |
+| Build tool | Vite | Frontend development and production build |
+| Backend | Python | API and repository analysis |
+| Version control | Git | Repository and commit-history analysis |
+| Rule engine | TOML rulebooks | Configurable repository checks |
+| Optional AI | Ollama + Gemma 3 | Local plain-English explanations |
+| Frontend hosting | Vercel | Live web application |
+| Backend hosting | Render | Hosted API service |
+| CI/CD | GitHub Actions | Automated backend tests and frontend build |
+
+---
+
+## 🔐 Safety and Trust
+
+Safety is an important part of CatchBlock's design.
+
+- Public GitHub repository URLs are supported for remote scanning.
+- Repository cloning is read-only and uses temporary storage, size limits, and time limits.
+- Repository code, hooks, and installation scripts are not executed during scanning.
+- Deleted-secret detection does not expose secret values.
+- Error messages avoid exposing local filesystem paths.
+- Fixes are previewed before application.
+- GitHub repository scans remain read-only; suggested changes can be downloaded as patches.
+
+**Important deployment distinction:**
+The hosted application scans public GitHub repositories through its remote backend. Local-folder scanning and local filesystem fix operations require the locally running application and backend. A hosted server cannot directly access folders on a visitor's computer.
+
+---
+
+## 🚀 Run CatchBlock Locally
+
+### Prerequisites
+
+- Python 3.11+
+- Git
+- Node.js 20.19+ or 22+
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SyedaUmmeHaani23/Catchblock.git
+cd Catchblock
+```
+
+### 2. Start the backend
+
+Open a terminal:
+
+```bash
 cd cb
 python -m catchblock.cli serve
 ```
 
+The backend runs locally at:
+
+```text
+http://localhost:8000
 ```
+
+### 3. Start the frontend
+
+Open another terminal:
+
+```bash
 cd web
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173 and paste a public GitHub repository link. Local folders work too.
+Open:
 
-Optional explainer: install [Ollama](https://ollama.com), then run `ollama pull gemma3:4b`. Without it everything else still works.
-
-## Command line
-
+```text
+http://localhost:5173
 ```
+
+You can now scan public GitHub repositories and supported local folders.
+
+### Windows shortcut
+
+You can also use:
+
+```text
+start-windows.bat
+```
+
+### Optional: Enable the local AI explainer
+
+Install [Ollama](https://ollama.com), then run:
+
+```bash
+ollama pull gemma3:4b
+```
+
+The rest of CatchBlock works without Ollama.
+
+---
+
+## ⌨️ Command-Line Usage
+
+Scan a public GitHub repository:
+
+```bash
 python -m catchblock.cli scan https://github.com/owner/repo
+```
+
+Scan a local folder:
+
+```bash
 python -m catchblock.cli scan C:\path\to\folder --json
+```
+
+Scan with an event rulebook:
+
+```bash
 python -m catchblock.cli scan . --rules devforge
+```
+
+Install the pre-push guard:
+
+```bash
 python -m catchblock.cli guard install C:\path\to\your\repo
 ```
 
-## Tests
+Generate a health badge:
 
+```bash
+python -m catchblock.cli scan . --badge catchblock-badge.svg
 ```
+
+Apply a minimum score requirement:
+
+```bash
+python -m catchblock.cli scan . --min-score 70
+```
+
+---
+
+## 🧪 Testing
+
+CatchBlock includes automated backend tests and a frontend production build.
+
+### Backend tests
+
+```bash
 cd cb
 python -m unittest discover -s tests -v
 ```
 
-## Safety
+**Latest local backend test result:** 57 tests passed.
 
-- Public `github.com` links only. The repo is cloned read-only, shallow, into a temporary folder with size and time limits, then deleted.
-- No repository code, hook or install script is run.
-- The local API only accepts requests from localhost.
-- Error messages never include local paths.
+### Frontend production build
 
-## Honest limits
+```bash
+cd web
+npm install
+npm run build
+```
 
-- A finding is a signal, not proof. A secret pattern can be a false alarm, and a commit pattern is not evidence of misconduct.
-- The projected score is an estimate.
-- Secrets in history look at the most recent 300 commits. Scans of GitHub links fetch up to 500 commits.
-- It does not replace specialist tools such as OpenSSF Scorecard or a full secret scanner.
+**Latest verified build:** Vite production build completed successfully.
 
-## Contribute
+### GitHub Actions
 
-1. Fork the repo and create a branch.
-2. Add a check in `cb/catchblock/checks/` (one function that returns a `Finding`), register it in `scanner.py`, and add a test in `cb/tests/`.
-3. Event rulebooks live in `cb/rules/*.toml`. Copy one and change the dates and requirements.
-4. Run the tests, then open a pull request.
+The repository includes a GitHub Actions workflow that runs:
+- Backend automated tests.
+- Frontend dependency installation.
+- Frontend production build.
 
-Good first issues: a SECURITY.md check, issue and PR template checks, more secret patterns.
+The latest verified CI run completed successfully for both jobs.
 
-## AI tools used
+---
 
-- **Claude (Anthropic)** was used as a coding assistant while building this project. Every team member can explain the code.
-- **Gemma 3 via Ollama** is an optional local model for plain-English explanations. It runs on your own machine.
+## ☁️ Deployment
 
-## Credits
+CatchBlock uses separate hosting for its frontend and backend.
 
-- [React](https://react.dev) and [Vite](https://vite.dev) for the web app (MIT)
-- Fonts from Google Fonts: Sora, Inter, JetBrains Mono (SIL Open Font License)
-- Python standard library and [Git](https://git-scm.com)
-- [Ollama](https://ollama.com) and Google's Gemma (optional explainer)
-- Add here any template, snippet or library you copied from another project, with its author and licence.
+| Service | Platform | Deployment |
+|---|---|---|
+| Frontend | Vercel | https://catchblock.vercel.app |
+| Backend | Render | https://catchblock.onrender.com |
 
-## License
+The frontend communicates with the backend through the configured API endpoint.
 
-See the LICENSE file in this repository.
+The frontend uses the `VITE_API` environment variable to identify the backend API URL.
 
-## More features
-- **Score trend.** Scan again after fixing and the report shows the change since last time. History stays on your computer (`~/.catchblock/history.json`).
-- **Health badge.** Download a self-contained SVG for your README from the report, or run `python -m catchblock.cli scan . --badge catchblock-badge.svg`.
-- **Issue checklist.** Copy every open finding as a Markdown to-do list for a GitHub issue or pull request (`--markdown` on the CLI).
-- **CI gate.** `python -m catchblock.cli scan . --min-score 70` exits with code 1 when the score is lower, so a pipeline can fail the build.
-- **Optional rulebooks.** `cb/rules/*.toml` can add an event window, minimum contributors or a licence from the first commit. The website uses `cb/rules/default.toml`, which has no event.
+For the deployed application, the backend must be configured to allow the deployed frontend origin.
 
+**Hosting note:** Free Render instances can spin down after inactivity, resulting in a delay on the first request. Local history and filesystem-based features should not be assumed to persist on a hosted instance.
+
+---
+
+## ⚖️ Honest Limitations
+
+CatchBlock is designed as a repository-readiness assistant, not a replacement for a complete security audit.
+
+- A finding is a signal, not proof. Secret patterns can produce false positives.
+- Commit patterns do not establish intent or misconduct.
+- Projected scores are estimates.
+- Secret-history checks examine the most recent 300 commits.
+- GitHub URL scans fetch up to 500 commits.
+- It does not replace specialist tools such as [OpenSSF Scorecard](https://scorecard.dev/) or a dedicated secret scanner.
+- Hosted scanning is intended for public GitHub repositories; local folder scanning requires a local setup.
+- The hosted service's free-tier availability and storage limitations may affect response time and persistence.
+
+---
+
+## 🤝 Contributing
+
+Contributions and suggestions are welcome!
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Add a check in `cb/catchblock/checks/`.
+4. Register the check in `scanner.py`.
+5. Add an appropriate test in `cb/tests/`.
+6. Run the tests.
+7. Open a pull request.
+
+Event rulebooks are available in:
+
+```text
+cb/rules/*.toml
+```
+
+### Good first issues
+- Add a `SECURITY.md` check.
+- Add issue and pull request template checks.
+- Expand supported secret patterns.
+- Improve repository-readiness rules.
+
+---
+
+## 🤖 AI Tools Used
+
+- **Claude (Anthropic):** Used as a coding assistant during development. Every team member should be able to explain the code and implementation.
+- **Gemma 3 via Ollama:** Optional local model used for plain-English explanations. It runs on the user's own machine.
+
+---
+
+## 🙌 Credits
+
+- [React](https://react.dev) and [Vite](https://vite.dev) — frontend.
+- Google Fonts — Sora, Inter, and JetBrains Mono.
+- Python standard library and [Git](https://git-scm.com).
+- [Ollama](https://ollama.com) and Google's Gemma — optional local explainer.
+
+Add attribution and licence details for any additional templates, snippets, or libraries incorporated into the project.
+
+---
+
+## 📄 License
+
+See the [LICENSE](LICENSE) file in this repository.
+
+---
+
+## 💚 Our Vision
+
+We believe repository quality should not be something developers discover only after a failed submission, a difficult review, or a security incident.
+
+Developers should be able to identify issues early, understand them clearly, and improve their projects with confidence.
+
+**CatchBlock makes repository health easier to see, understand, and improve.**
+
+### Catch issues before they catch you. 🛡️
