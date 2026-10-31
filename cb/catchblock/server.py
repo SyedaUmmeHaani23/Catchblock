@@ -1,4 +1,4 @@
-import json, re, threading
+import json, re, threading, os
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from . import history
@@ -10,12 +10,22 @@ from .rules import list_rules, load_rules
 from .scanner import scan, scan_url
 
 LOCAL_ORIGIN = re.compile(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$")
+REMOTE_MODE = os.environ.get("CATCHBLOCK_REMOTE_MODE", "false").lower() == "true"
 CLONES = threading.BoundedSemaphore(3)  # at most 3 simultaneous clones
 
 class Handler(BaseHTTPRequestHandler):
     def _cors(self):
         o = self.headers.get("Origin")
-        return o if o and LOCAL_ORIGIN.match(o) else None
+        if not o:
+            return None
+        allowed = {
+            x.strip().rstrip("/")
+            for x in os.environ.get("CATCHBLOCK_ALLOWED_ORIGINS", "").split(",")
+            if x.strip()
+        }
+        if LOCAL_ORIGIN.match(o) or o.rstrip("/") in allowed:
+            return o
+        return None
 
     def _send(self, code, body):
         data = json.dumps(body).encode()
@@ -26,6 +36,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", o)
             self.send_header("Vary", "Origin")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -52,7 +63,10 @@ class Handler(BaseHTTPRequestHandler):
         if self.path not in ("/scan", "/fix", "/undo", "/explain", "/badge"):
             return self._send(404, {"error": "not found"})
         o = self.headers.get("Origin")
-        if o and not LOCAL_ORIGIN.match(o):  # blocks other websites from driving the local API
+        if o and not self._cors():
+            return self._send(403, {"error": "forbidden origin"})
+        if REMOTE_MODE and self.path in ("/fix", "/undo"):
+            return self._send(403, {"error": "Local file modifications are disabled on the hosted service."})
             return self._send(403, {"error": "forbidden origin"})
         try:
             n = int(self.headers.get("Content-Length", 0))
@@ -99,6 +113,8 @@ class Handler(BaseHTTPRequestHandler):
         except Exception:
             self._send(500, {"error": "Something went wrong while scanning."})
 
-def serve(port=8000):
-    print(f"CatchBlock API on http://localhost:{port}  (GET /health /rules, POST /scan /fix /undo /explain /badge)")
-    ThreadingHTTPServer(("127.0.0.1", port), Handler).serve_forever()
+def serve(port=None):
+    port = int(os.environ.get("PORT", port or 8000))
+    host = "0.0.0.0" if REMOTE_MODE else "127.0.0.1"
+    print(f"CatchBlock API running on {host}:{port}")
+    ThreadingHTTPServer((host, port), Handler).serve_forever()
