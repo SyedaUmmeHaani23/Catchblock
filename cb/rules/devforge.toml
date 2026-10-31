@@ -1,0 +1,10 @@
+[event]
+name = "Devf8rge Hack Day Finals"
+start = "2026-10-30T22:00:00+05:30"
+freeze = "2026-10-31T10:00:00+05:30"
+
+[requirements]
+licenses = ["MIT", "Apache-2.0"]
+min_authors = 2
+ai_disclosure = true
+license_from_first_commit = true

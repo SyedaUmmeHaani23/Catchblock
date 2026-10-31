@@ -1,0 +1,11 @@
+# Edit these to match your event's real rulebook. Dates MUST carry a UTC offset.
+[event]
+name = "Hacktoberfest 2026"
+start = "2026-10-01T00:00:00+05:30"
+freeze = "2026-10-31T23:59:59+05:30"
+
+[requirements]
+licenses = ["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause", "ISC", "MPL-2.0"]
+min_authors = 1
+ai_disclosure = true
+license_from_first_commit = false

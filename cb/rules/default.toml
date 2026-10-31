@@ -1,0 +1,6 @@
+# Default checks for any repository. No event dates: the commit timeline simply shows history.
+[requirements]
+licenses = ["MIT", "Apache-2.0", "GPL-3.0", "BSD-3-Clause", "ISC", "MPL-2.0"]
+min_authors = 1
+ai_disclosure = true
+license_from_first_commit = false
